@@ -1,11 +1,13 @@
 package com.setronica.eventing.persistence;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Component;
-
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class EventRepository {
@@ -27,5 +29,11 @@ public class EventRepository {
         }
 
         return null;
+    }
+
+    public List<Event> getByEvent(String q) {
+        List<Event> events = findAll();
+
+        return events.stream().filter(e -> e.getTitle().equalsIgnoreCase(q)).collect(Collectors.toList());
     }
 }

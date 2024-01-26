@@ -1,10 +1,11 @@
 package com.setronica.eventing.app;
 
-import com.setronica.eventing.persistence.Event;
-import com.setronica.eventing.persistence.EventRepository;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.setronica.eventing.persistence.Event;
+import com.setronica.eventing.persistence.EventRepository;
 
 @Service
 public class EventService {
@@ -17,5 +18,9 @@ public class EventService {
 
     public List<Event> getAll() {
         return eventRepository.findAll();
+    }
+
+    public List<Event> getByEvent(String q) {
+        return eventRepository.getByEvent(q);
     }
 }
