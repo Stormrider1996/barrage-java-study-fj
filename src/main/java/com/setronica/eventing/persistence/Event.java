@@ -1,13 +1,8 @@
 package com.setronica.eventing.persistence;
 
-import java.time.LocalDate;
+import jakarta.persistence.*;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "\"event\"")
@@ -22,8 +17,8 @@ public class Event {
     private String description;
     @Column
     private LocalDate date;
-    // leave it now for the next meetup session
-    // private List<String> images;
+//    leave it now for the next meetup session
+//    private List<String> images;
 
     public int getId() {
         return id;
