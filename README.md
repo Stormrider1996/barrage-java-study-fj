@@ -134,6 +134,76 @@ Practical exercise:
 Describe a CRUD to handle the `Event` entity, i.e. read, create, update, delete operations.
 Update the service code, and controller methods for all the above operations.
 
+
+## Task3
+
+In the next task we need to add business logic for event tickets. Events can take place on different days, as well as repeat, for example, Cirque du Soleil, therefore we need to organise the storage of the schedule of events, as well as the number of available seats at the event.
+So, to create the schedule, let's create the `event_schedule` table
+
+
+```sql
+create table event_schedule (
+  id serial primary key,
+  event_id int not null,
+  event_date date not null,
+  available_seats int not null,
+  price decimal(10,2) not null
+);
+```
+
+table for selling tickets `ticket_order`
+
+```sql
+create table ticket_order (
+  id serial primary key,
+  firstname varchar(255) not null,
+  lastname varchar(255) not null,
+  email varchar(255) not null,
+  amount int not null
+);
+```
+
+Let's describe the entities for tables and JPA repositories:
+```java
+...
+```
+
+
+Then we need to implement business logic to manage these entities (CRUD).
+Create CRUD endpoints.
+
+
+In business logic sometimes exceptional situations occur, to handle them correctly we can use Spring Boot tools for exception handling.
+In exceptional situations we will throw exceptions and use Spring Boot tools to convert them into client-understandable DTOs and error codes.
+
+Create your own exception types and use the `@ControllerAdvice` component to handle exceptions in your application, for example, when an object is not found in a data source.
+
+Note that the number of ticket sales cannot be more than `event_schedule.available_seats`. To avoid this, you need to create an insert trigger, which will check the available quantity before inserting a new row.
+Do exception handling for the current case.
+
+Think why this task should not be solved at the application level?
+
+
+## Task 4
+
+concurrency and multi-threading
+logging + ELK
+testing: JUnit5, SpringBootTest
+
+TBD ....
+
+## Task 5
+
+TBD ....
+
+## Task 6
+
+TBD ....
+
+## Task 7
+
+TBD ....
+
 ---
 
 #### Misc
@@ -144,4 +214,4 @@ other docker services and keep current environment as isolated from the other pr
 I can suggest to create 
 ```
 docker network create -d bridge --subnet 172.21.0.0/24 --gateway 172.21.0.1 dockernet
-```**
+```

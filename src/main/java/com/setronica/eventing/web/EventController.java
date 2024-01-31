@@ -1,59 +1,61 @@
 package com.setronica.eventing.web;
 
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.setronica.eventing.app.EventService;
+import com.setronica.eventing.dto.EventDto;
+import com.setronica.eventing.mapper.EventMapper;
 import com.setronica.eventing.persistence.Event;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("event/api/v1/events")
 public class EventController {
 
     private final EventService eventService;
+    private final EventMapper eventMapper;
 
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService, EventMapper eventMapper) {
         this.eventService = eventService;
+        this.eventMapper = eventMapper;
     }
 
     @GetMapping
-    public ResponseEntity<List<Event>> getAllEvents() {
-        List<Event> events = eventService.getAllEvents();
-        return new ResponseEntity<>(events, HttpStatus.OK);
+    public List<Event> findAll() {
+        return eventService.getAll();
     }
 
-    @PostMapping("create")
-    public ResponseEntity<Event> createEvent(@RequestBody Event event) {
-        Event newEvent = eventService.createEvent(event);
-        return new ResponseEntity<>(newEvent, HttpStatus.CREATED);
+    @GetMapping("search")
+    public List<Event> searchEvents(
+            @RequestParam String q
+    ) {
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Event> getEventById(@PathVariable Integer id) {
-        Event event = eventService.getEventById(id).orElseThrow(() -> new RuntimeException("Event not found"));
-        return new ResponseEntity<>(event, HttpStatus.OK);
+    public EventDto getById(@PathVariable Integer id) {
+        Event entity = eventService.getById(id);
+        return eventMapper.mapToDto(entity);
+    }
+
+    @PostMapping("")
+    public EventDto createEvent(@RequestBody EventDto dto) {
+        Event event = eventMapper.mapToEvent(dto);
+        Event createdEvent = eventService.createEvent(event);
+        return eventMapper.mapToDto(createdEvent);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Event> updateEventById(@PathVariable Integer id, @RequestBody Event event) {
-        Event updatedEvent = eventService.updateEvent(id, event);
-        return new ResponseEntity<>(updatedEvent, HttpStatus.OK);
+    public EventDto updateEvent(@RequestBody EventDto dto) {
+        Event event = eventMapper.mapToEvent(dto);
+        Event createdEvent = eventService.updateEvent(event);
+        return eventMapper.mapToDto(createdEvent);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEvent(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteEvent(@PathVariable("id") int id) {
         eventService.deleteEvent(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.ok().build();
     }
-
 }

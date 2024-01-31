@@ -19,9 +19,22 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+	// lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// mapstruct
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
+	// hypersistence for hibernate ORM
+	implementation 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.16.1'
+	implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.7.0'
+
 	runtimeOnly 'org.postgresql:postgresql:42.7.1'
 	implementation 'org.liquibase:liquibase-core:4.25.1'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 }
 
 tasks.named('test') {
