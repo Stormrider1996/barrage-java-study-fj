@@ -1,10 +1,13 @@
 package com.setronica.eventing.persistence;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
+@Entity
+@Table(name = "ticket_order")
 public class TicketOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

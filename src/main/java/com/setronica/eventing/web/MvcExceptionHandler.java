@@ -3,8 +3,10 @@ package com.setronica.eventing.web;
 import com.setronica.eventing.dto.ApplicationExceptionDto;
 import com.setronica.eventing.exceptions.ApplicationLogicException;
 import com.setronica.eventing.exceptions.NotFoundException;
+import com.setronica.eventing.exceptions.TicketOrderException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -22,4 +24,11 @@ public class MvcExceptionHandler {
         ApplicationExceptionDto exceptionDto = new ApplicationExceptionDto(ex.getMessage());
         return new ResponseEntity<>(exceptionDto, HttpStatusCode.valueOf(404));
     }
+
+    @ExceptionHandler({ TicketOrderException.class })
+    public ResponseEntity<ApplicationExceptionDto> handleTicketOrderException(TicketOrderException ex) {
+        ApplicationExceptionDto exceptionDto = new ApplicationExceptionDto(ex.getMessage());
+        return new ResponseEntity<>(exceptionDto, HttpStatusCode.valueOf(400));
+    }
+
 }
