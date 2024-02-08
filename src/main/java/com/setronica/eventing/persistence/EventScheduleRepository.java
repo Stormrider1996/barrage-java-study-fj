@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface EventRepository extends JpaRepository<Event, Integer> {
+public interface EventScheduleRepository extends JpaRepository<EventSchedule, Integer> {
 }

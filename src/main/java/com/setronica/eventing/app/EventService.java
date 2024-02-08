@@ -1,12 +1,11 @@
 package com.setronica.eventing.app;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
+import com.setronica.eventing.exceptions.NotFoundException;
 import com.setronica.eventing.persistence.Event;
 import com.setronica.eventing.persistence.EventRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class EventService {
@@ -17,27 +16,23 @@ public class EventService {
         this.eventRepository = eventRepository;
     }
 
-    public List<Event> getAllEvents() {
+    public List<Event> getAll() {
         return eventRepository.findAll();
+    }
+
+    public Event getById(Integer id) {
+        return eventRepository.findById(id).orElseThrow(() -> new NotFoundException("Event not found with id=" + id));
     }
 
     public Event createEvent(Event event) {
         return eventRepository.save(event);
     }
 
-    public Optional<Event> getEventById(Integer id) {
-        return eventRepository.findById(id);
+    public Event updateEvent(Event event) {
+        return eventRepository.save(event);
     }
 
-    public Event updateEvent(Integer id, Event event) {
-        Event existingEvent = eventRepository.findById(id).orElseThrow(() -> new RuntimeException("Event not found"));
-        existingEvent.setTitle(event.getTitle());
-        existingEvent.setDescription(event.getDescription());
-        existingEvent.setDate(event.getDate());
-        return eventRepository.save(existingEvent);
-    }
-
-    public void deleteEvent(Integer id) {
+    public void deleteEvent(int id) {
         eventRepository.deleteById(id);
     }
 }
