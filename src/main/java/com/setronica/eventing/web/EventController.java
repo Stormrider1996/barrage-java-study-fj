@@ -25,8 +25,9 @@ public class EventController {
     }
 
     @GetMapping
-    public List<Event> findAll() {
-        return eventService.getAll();
+    public List<EventDto> getAll() {
+        List<Event> entities = eventService.getAll();
+        return eventMapper.mapToDtoList(entities);
     }
 
     @GetMapping("{id}")
