@@ -4,6 +4,7 @@ import com.setronica.eventing.app.EventService;
 import com.setronica.eventing.dto.EventDto;
 import com.setronica.eventing.mapper.EventMapper;
 import com.setronica.eventing.persistence.Event;
+import org.hibernate.event.internal.EvictVisitor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,34 +27,27 @@ public class EventController {
         return eventService.getAll();
     }
 
-    @GetMapping("search")
-    public List<Event> searchEvents(
-            @RequestParam String q
-    ) {
-        throw new UnsupportedOperationException("Not implemented");
-    }
-
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public EventDto getById(@PathVariable Integer id) {
         Event entity = eventService.getById(id);
         return eventMapper.mapToDto(entity);
     }
 
-    @PostMapping("")
+    @PostMapping()
     public EventDto createEvent(@RequestBody EventDto dto) {
         Event event = eventMapper.mapToEvent(dto);
         Event createdEvent = eventService.createEvent(event);
         return eventMapper.mapToDto(createdEvent);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("{id}")
     public EventDto updateEvent(@RequestBody EventDto dto) {
         Event event = eventMapper.mapToEvent(dto);
         Event createdEvent = eventService.updateEvent(event);
         return eventMapper.mapToDto(createdEvent);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable("id") int id) {
         eventService.deleteEvent(id);
         return ResponseEntity.ok().build();

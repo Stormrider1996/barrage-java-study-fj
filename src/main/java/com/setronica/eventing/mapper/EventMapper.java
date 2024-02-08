@@ -6,10 +6,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.List;
+
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR, componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class EventMapper {
 
     public abstract EventDto mapToDto(Event entity);
 
     public abstract Event mapToEvent(EventDto dto);
+
 }
