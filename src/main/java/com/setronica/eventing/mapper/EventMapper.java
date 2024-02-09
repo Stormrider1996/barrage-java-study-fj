@@ -20,5 +20,4 @@ public abstract class EventMapper {
 
     public abstract List<Event> mapToEventList(List<EventDto> dtos);
 
-
 }
