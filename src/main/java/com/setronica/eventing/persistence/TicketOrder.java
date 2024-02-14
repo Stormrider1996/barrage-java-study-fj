@@ -20,4 +20,10 @@ public class TicketOrder {
     private String email;
     @Column(nullable = false)
     private Integer amount;
+    @Column(nullable = false)
+    private String payment;
+    @Column(nullable = false)
+    private String status;
+    @Column(nullable = false)
+    private Integer eventScheduleId;
 }

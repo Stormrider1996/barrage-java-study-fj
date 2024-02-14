@@ -4,6 +4,7 @@ import com.setronica.eventing.app.TicketOrderService;
 import com.setronica.eventing.dto.TicketOrderDto;
 import com.setronica.eventing.mapper.TicketOrderMapper;
 import com.setronica.eventing.persistence.TicketOrder;
+import org.slf4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,8 @@ public class TicketOrderController {
     private final TicketOrderService ticketOrderService;
 
     private final TicketOrderMapper ticketOrderMapper;
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(TicketOrderController.class);
 
     public TicketOrderController(TicketOrderService ticketOrderService, TicketOrderMapper ticketOrderMapper) {
         this.ticketOrderService = ticketOrderService;
