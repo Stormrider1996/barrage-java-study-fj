@@ -5,6 +5,7 @@ import com.setronica.eventing.dto.EventDto;
 import com.setronica.eventing.mapper.EventMapper;
 import com.setronica.eventing.persistence.Event;
 import org.hibernate.event.internal.EvictVisitor;
+import org.slf4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ public class EventController {
 
     private final EventService eventService;
     private final EventMapper eventMapper;
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(EventController.class);
 
     public EventController(EventService eventService, EventMapper eventMapper) {
         this.eventService = eventService;
@@ -23,8 +25,9 @@ public class EventController {
     }
 
     @GetMapping
-    public List<Event> findAll() {
-        return eventService.getAll();
+    public List<EventDto> getAll() {
+        List<Event> entities = eventService.getAll();
+        return eventMapper.mapToDtoList(entities);
     }
 
     @GetMapping("{id}")
