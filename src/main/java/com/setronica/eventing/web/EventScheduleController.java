@@ -4,6 +4,7 @@ import com.setronica.eventing.app.EventScheduleService;
 import com.setronica.eventing.dto.EventScheduleDto;
 import com.setronica.eventing.mapper.EventScheduleMapper;
 import com.setronica.eventing.persistence.EventSchedule;
+import org.slf4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,8 @@ public class EventScheduleController {
     private final EventScheduleService eventScheduleService;
 
     private final EventScheduleMapper eventScheduleMapper;
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(EventScheduleController.class);
 
     public EventScheduleController(EventScheduleService eventScheduleService, EventScheduleMapper eventScheduleMapper) {
         this.eventScheduleService = eventScheduleService;

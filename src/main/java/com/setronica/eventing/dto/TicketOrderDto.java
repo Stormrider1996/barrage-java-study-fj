@@ -11,4 +11,7 @@ public class TicketOrderDto {
     private String lastname;
     private String email;
     private Integer amount;
+    private String payment;
+    private String status;
+    private Integer eventScheduleId;
 }
