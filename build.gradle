@@ -37,6 +37,12 @@ dependencies {
 	// springdoc
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
 
+	// actuator
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	// prometheus
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+
 	runtimeOnly 'org.postgresql:postgresql:42.7.1'
 	implementation 'org.liquibase:liquibase-core:4.25.1'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

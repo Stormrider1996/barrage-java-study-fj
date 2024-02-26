@@ -16,8 +16,18 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: postgres
-
   rabbitmq:
     host: 127.0.0.1
     username: rabbit
     password: qwesda
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 2
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: [ "prometheus", "health" ]

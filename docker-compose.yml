@@ -28,8 +28,8 @@ services:
       KC_DB_PASSWORD: ukeycloak
       KC_HOSTNAME_STRICT: "false"
       KC_HTTP_ENABLED: "true"
-#      KC_PROXY: "edge"
-#      KC_HOSTNAME: 172.21.0.1:8180
+      #      KC_PROXY: "edge"
+      #      KC_HOSTNAME: 172.21.0.1:8180
       KC_HOSTNAME_URL: http://172.21.0.1:8180/
       KC_HOSTNAME_STRICT_BACKCHANNEL: true
       KEYCLOAK_ADMIN: user
@@ -39,7 +39,7 @@ services:
       - ./docker/config/keycloak/providers:/opt/keycloak/providers
 
   oauth2-proxy:
-#    image: bitnami/oauth2-proxy:7.5.1
+    #    image: bitnami/oauth2-proxy:7.5.1
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.5.1
     command:
       - --http-address
@@ -69,7 +69,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.8.0
     volumes:
       - ./docker/config/elk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-      - ./docker/data/elasticsearch:/usr/share/elasticsearch/data:rw
+    #      - ./docker/data/elasticsearch:/usr/share/elasticsearch/data:rw
     ports:
       - "9200:9200"
     networks:
@@ -122,8 +122,27 @@ services:
       - "5672:5672"
       - "15672:15672"
 
+  grafana:
+    container_name: grafana.dockernet
+    image: grafana/grafana
+    networks:
+      - dockernet
+    ports:
+      - "3000:3000"
+    volumes:
+      #      - ./docker/config/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - grafana_data:/var/lib/grafana
+
+  prometheus:
+    container_name: prometheus.dockernet
+    image: prom/prometheus
+    networks:
+      - dockernet
+    volumes:
+      - ./docker/config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
 volumes:
-  node-red-data:
+  grafana_data:
 
 networks:
   dockernet:
