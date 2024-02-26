@@ -1,27 +1,30 @@
 package com.setronica.eventing.app;
 
+import com.setronica.eventing.dto.SaleDto;
 import com.setronica.eventing.exceptions.NotFoundException;
 import com.setronica.eventing.exceptions.TicketOrderException;
-import com.setronica.eventing.persistence.EventSchedule;
-import com.setronica.eventing.persistence.EventScheduleRepository;
-import com.setronica.eventing.persistence.TicketOrder;
-import com.setronica.eventing.persistence.TicketOrderRepository;
+import com.setronica.eventing.persistence.*;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TicketOrderService {
 
     private final TicketOrderRepository ticketOrderRepository;
     private final EventScheduleRepository eventScheduleRepository;
+    private final RabbitTemplate rabbitTemplate;
+    private final EventRepository eventRepository;
 
-    public TicketOrderService(TicketOrderRepository ticketOrderRepository, EventScheduleRepository eventScheduleRepository) {
+    public TicketOrderService(TicketOrderRepository ticketOrderRepository, EventScheduleRepository eventScheduleRepository, RabbitTemplate rabbitTemplate, EventRepository eventRepository) {
         this.ticketOrderRepository = ticketOrderRepository;
         this.eventScheduleRepository = eventScheduleRepository;
+        this.rabbitTemplate = rabbitTemplate;
+        this.eventRepository = eventRepository;
     }
 
     public List<TicketOrder> getAll() {
@@ -48,30 +51,40 @@ public class TicketOrderService {
 
         Integer seatsAmount = eventSchedule.getAvailableSeats() - ticketOrder.getAmount();
 
-        eventSchedule.setAvailableSeats(seatsAmount);
-        this.eventScheduleRepository.save(eventSchedule);
-
-        return ticketOrderRepository.save(ticketOrder);
+        return saveAndSend(ticketOrder, eventSchedule, seatsAmount);
     }
 
-    public TicketOrder updateTicketOrder(TicketOrder updatedTicketOrder, Integer id) {
-       TicketOrder existingTicketOrder = getById(id);
+    public TicketOrder updateTicketOrder(TicketOrder updatedTicketOrder) {
+       EventSchedule eventSchedule = this.eventScheduleRepository.getReferenceById(updatedTicketOrder.getEventScheduleId());
 
-       if (Objects.equals(updatedTicketOrder.getStatus(), "REFUND")) {
-           EventSchedule eventSchedule = this.eventScheduleRepository.getReferenceById(updatedTicketOrder.getEventScheduleId());
+       Integer seatsAmount = eventSchedule.getAvailableSeats() + updatedTicketOrder.getAmount();
 
-           Integer seatsAmount = eventSchedule.getAvailableSeats() + updatedTicketOrder.getAmount();
-
-           eventSchedule.setAvailableSeats(seatsAmount);
-           this.eventScheduleRepository.save(eventSchedule);
-       }
-
-       existingTicketOrder = updatedTicketOrder;
-
-       return ticketOrderRepository.save(existingTicketOrder);
+       return saveAndSend(updatedTicketOrder, eventSchedule, seatsAmount);
     }
 
     public void deleteTicketOrder(int id) {
         ticketOrderRepository.deleteById(id);
+    }
+
+    @Async("appThreadPool")
+    public void asyncOperation() throws InterruptedException {
+        Thread.sleep(5000);
+        System.out.println("Done.");
+    }
+
+    public void sendMessage(SaleDto message) {
+        rabbitTemplate.convertAndSend("spring-boot", message);
+    }
+
+    private TicketOrder saveAndSend(TicketOrder ticketOrder, EventSchedule eventSchedule, Integer seatsAmount) {
+        eventSchedule.setAvailableSeats(seatsAmount);
+        this.eventScheduleRepository.save(eventSchedule);
+
+        Event event = eventRepository.getReferenceById(eventSchedule.getEventId());
+
+        SaleDto message = new SaleDto(ticketOrder.getEmail(), event.getTitle(), ticketOrder.getAmount());
+
+        sendMessage(message);
+        return ticketOrderRepository.save(ticketOrder);
     }
 }

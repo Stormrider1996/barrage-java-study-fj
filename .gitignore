@@ -38,3 +38,4 @@ out/
 
 docker
 .DS_Store
+logs

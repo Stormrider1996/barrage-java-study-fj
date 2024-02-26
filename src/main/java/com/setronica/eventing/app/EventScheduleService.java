@@ -3,6 +3,7 @@ package com.setronica.eventing.app;
 import com.setronica.eventing.exceptions.NotFoundException;
 import com.setronica.eventing.persistence.EventSchedule;
 import com.setronica.eventing.persistence.EventScheduleRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,13 +29,17 @@ public class EventScheduleService {
         return eventScheduleRepository.save(eventSchedule);
     }
 
-    public EventSchedule updateEventSchedule(EventSchedule updatedEventSchedule, Integer id) {
-        EventSchedule existingEventSchedule = getById(id);
-        existingEventSchedule = updatedEventSchedule;
-        return eventScheduleRepository.save(existingEventSchedule);
+    public EventSchedule updateEventSchedule(EventSchedule updatedEventSchedule) {
+        return eventScheduleRepository.save(updatedEventSchedule);
     }
 
     public void deleteEventSchedule(Integer id) {
         eventScheduleRepository.deleteById(id);
+    }
+
+    @Async("appThreadPool")
+    public void asyncOperation() throws InterruptedException {
+        Thread.sleep(5000);
+        System.out.println("Done.");
     }
 }
